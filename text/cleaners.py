@@ -12,21 +12,13 @@ hyperparameter. Some cleaners are English-specific. You'll typically want to use
      the symbols in symbols.py to match your data).
 '''
 
-from dataclasses import replace
 import re
 from unidecode import unidecode
 from phonemizer import phonemize
-import pyopenjtalk
-
-
+from pypinyin import Style, pinyin
+from pypinyin.style._utils import get_finals, get_initials
 # Regular expression matching whitespace:
 _whitespace_re = re.compile(r'\s+')
-
-# Regular expression matching Japanese without punctuation marks:
-_japanese_characters = re.compile(r'[A-Za-z\d\u3005\u3040-\u30ff\u4e00-\u9fff\uff11-\uff19\uff21-\uff3a\uff41-\uff5a\uff66-\uff9d]')
-
-# Regular expression matching non-Japanese characters or punctuation marks:
-_japanese_marks = re.compile(r'[^A-Za-z\d\u3005\u3040-\u30ff\u4e00-\u9fff\uff11-\uff19\uff21-\uff3a\uff41-\uff5a\uff66-\uff9d]')
 
 # List of (regular expression, replacement) pairs for abbreviations:
 _abbreviations = [(re.compile('\\b%s\\.' % x[0], re.IGNORECASE), x[1]) for x in [
@@ -108,42 +100,39 @@ def english_cleaners2(text):
   return phonemes
 
 
-def japanese_cleaners(text):
-  '''Pipeline for notating accent in Japanese text.'''
-  '''Reference https://r9y9.github.io/ttslearn/latest/notebooks/ch10_Recipe-Tacotron.html'''
-  sentences = re.split(_japanese_marks, text)
-  marks = re.findall(_japanese_marks, text)
-  text = ''
-  for i, sentence in enumerate(sentences):
-    if re.match(_japanese_characters, sentence):
-      if text!='':
-        text+=' '
-      labels = pyopenjtalk.extract_fullcontext(sentence)
-      for n, label in enumerate(labels):
-        phoneme = re.search(r'\-([^\+]*)\+', label).group(1)
-        if phoneme not in ['sil','pau']:
-          text += phoneme.replace('ch','ʧ').replace('sh','ʃ').replace('cl','Q')
-        else:
-          continue
-        n_moras = int(re.search(r'/F:(\d+)_', label).group(1))
-        a1 = int(re.search(r"/A:(\-?[0-9]+)\+", label).group(1))
-        a2 = int(re.search(r"\+(\d+)\+", label).group(1))
-        a3 = int(re.search(r"\+(\d+)/", label).group(1))
-        if re.search(r'\-([^\+]*)\+', labels[n + 1]).group(1) in ['sil','pau']:
-          a2_next=-1
-        else:
-          a2_next = int(re.search(r"\+(\d+)\+", labels[n + 1]).group(1))
-        # Accent phrase boundary
-        if a3 == 1 and a2_next == 1:
-          text += ' '
-        # Falling
-        elif a1 == 0 and a2_next == a2 + 1 and a2 != n_moras:
-          text += '↓'
-        # Rising
-        elif a2 == 1 and a2_next == 2:
-          text += '↑'
-    if i<len(marks):
-      text += unidecode(marks[i]).replace(' ','')
-  if re.match('[A-Za-z]',text[-1]):
-    text += '.'
-  return text
+
+
+def chinese_cleaners1(text):
+    from pypinyin import Style, pinyin
+
+    phones = [phone[0] for phone in pinyin(text, style=Style.TONE3)]
+    return ' '.join(phones)
+  
+  
+def chinese_cleaners2(text):
+  phones = [
+      p
+      for phone in pinyin(text, style=Style.TONE3)
+      for p in [
+          get_initials(phone[0], strict=True),
+          get_finals(phone[0][:-1], strict=True) + phone[0][-1]
+          if phone[0][-1].isdigit()
+          else get_finals(phone[0], strict=True)
+          if phone[0][-1].isalnum()
+          else phone[0],
+      ]
+      # Remove the case of individual tones as a phoneme
+      if len(p) != 0 and not p.isdigit()
+  ]
+  return phones
+  # return phonemes
+  
+if __name__ == '__main__':
+  res = chinese_cleaners2('这是语音测试！')
+  print(res)
+  res = chinese_cleaners1('"第一，南京不是发展的不行，是大家对他期望很高，')
+  print(res)
+  
+  
+  res = english_cleaners2('this is a club test for one train.GDP')
+  print(res)
