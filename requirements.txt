@@ -5,5 +5,4 @@ numpy==1.21.6
 phonemizer==2.2.1
 scipy==1.5.2
 Unidecode==1.1.1
-pyopenjtalk==0.2.0
 pypinyin==0.47.0
