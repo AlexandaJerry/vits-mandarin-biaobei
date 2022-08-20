@@ -6,10 +6,10 @@ Defines the set of symbols used in text input to the model.
 _pad        = '_'
 _punctuation = ';:,.!?¡¿—…"«»“” '
 
-_punctuation_zh = '；：，。！？-“”《》、（）ＢＰ…— '
+_punctuation_zh = '；：，。！？-“”《》、（）ＢＰ…—~.\· '
 _letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 
-_numbers = '123450'
+_numbers = '1234567890'
 _others = ''
 
 _letters_ipa = "ɑɐɒæɓʙβɔɕçɗɖðʤəɘɚɛɜɝɞɟʄɡɠɢʛɦɧħɥʜɨɪʝɭɬɫɮʟɱɯɰŋɳɲɴøɵɸθœɶʘɹɺɾɻʀʁɽʂʃʈʧʉʊʋⱱʌɣɤʍχʎʏʑʐʒʔʡʕʢǀǁǂǃˈˌːˑʼʴʰʱʲʷˠˤ˞↓↑→↗↘'̩'ᵻ"
