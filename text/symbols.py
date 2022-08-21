@@ -6,7 +6,7 @@ Defines the set of symbols used in text input to the model.
 _pad        = '_'
 _punctuation = ';:,.!?¡¿—…"«»“” '
 
-_punctuation_zh = '；：，。！？-“”《》、（）ＢＰ…—~.\· '
+_punctuation_zh = '；：，。！？-“”《》、（）ＢＰ…—~.\·『』・ '
 _letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 
 _numbers = '1234567890'
@@ -22,3 +22,4 @@ symbols_zh = [_pad] + list(_punctuation_zh) +  list(_letters) + list(_numbers)
 
 # Special symbol ids
 SPACE_ID = symbols.index(" ")
+
