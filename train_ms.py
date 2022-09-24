@@ -49,7 +49,7 @@ def main():
 
   n_gpus = torch.cuda.device_count()
   os.environ['MASTER_ADDR'] = 'localhost'
-  os.environ['MASTER_PORT'] = '80000'
+  os.environ['MASTER_PORT'] = '8000'
 
   hps = utils.get_hparams()
   mp.spawn(run, nprocs=n_gpus, args=(n_gpus, hps,))
@@ -229,8 +229,8 @@ def train_and_evaluate(rank, epoch, hps, nets, optims, schedulers, scaler, loade
 
       if global_step % hps.train.eval_interval == 0:
         evaluate(hps, net_g, eval_loader, writer_eval)
-        utils.save_checkpoint(net_g, optim_g, hps.train.learning_rate, epoch, os.path.join(hps.model_dir, "G_{}.pth".format(global_step)))
-        utils.save_checkpoint(net_d, optim_d, hps.train.learning_rate, epoch, os.path.join(hps.model_dir, "D_{}.pth".format(global_step)))
+        utils.save_checkpoint(net_g, optim_g, hps.train.learning_rate, epoch, '/content/drive/MyDrive/Genshin_ms/G_ms.pth')
+        utils.save_checkpoint(net_d, optim_d, hps.train.learning_rate, epoch, '/content/drive/MyDrive/Genshin_ms/D_ms.pth')
     global_step += 1
   
   if rank == 0:
