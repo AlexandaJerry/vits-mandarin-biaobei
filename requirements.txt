@@ -5,4 +5,4 @@ numpy==1.21.6
 phonemizer==2.2.1
 scipy
 Unidecode==1.1.1
-pypinyin==0.47.0
+pypinyin
