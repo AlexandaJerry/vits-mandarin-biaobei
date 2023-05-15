@@ -40,3 +40,5 @@ cpdef void maximum_path_c(int[:,:,::1] paths, float[:,:,::1] values, int[::1] t_
   cdef int i
   for i in prange(b, nogil=True):
     maximum_path_each(paths[i], values[i], t_ys[i], t_xs[i])
+
+
